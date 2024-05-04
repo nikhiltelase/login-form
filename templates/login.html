@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from 'bootstrap/form.html' import render_field, render_hidden_errors %}
+{% block title %} Login {% endblock %}
+
+{% block content %}
+	<div class="container">
+		<h1>Login</h1>
+        <!-- This is where our form will go. -->
+		<form method="POST" action="{{ url_for('login' )}}" novalidate>
+			{{ form.csrf_token }}
+			<div>
+				{{ render_field(form.email) }}
+				<!-- wrong email -->
+				<span style="color: red;">{{ wrong_email }}</span>
+				<!-- errors -->
+				{{ render_hidden_errors(form) }}
+			</div>
+			<div>
+				{{ render_field(form.password) }}
+				<!-- wrong password -->
+				<span style="color: red;">{{ wrong_password }}</span>
+				<!-- errors -->
+				{{ render_hidden_errors(form) }}
+			</div>
+			<br>
+			{{ render_field(form.submit) }}
+			
+		</form>
+	</div>
+{% endblock %}
