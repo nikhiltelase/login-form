@@ -1,26 +1,28 @@
 from flask import Flask, render_template
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, SubmitField, validators, EmailField
-from flask_bootstrap import Bootstrap
+from wtforms import PasswordField, SubmitField, EmailField
+from wtforms.validators import Email, DataRequired, Length
+from flask_bootstrap import Bootstrap5
 
 
 class LoginForm(FlaskForm):
-    email = EmailField('email',
+    email = EmailField('Email address',
                         validators=[
-                            validators.Email(),
-                            validators.DataRequired(),
-                            ])
-    password = PasswordField('password',
+                            Email(),
+                            DataRequired(),
+                            ],
+                       )
+    password = PasswordField('Password',
                              validators=[
-                                 validators.Length(min=8, max=10),
-                                 validators.DataRequired(),
-                                 ])
+                                 Length(min=8, max=16),
+                                 DataRequired(),
+                                 ],
+                             )
     submit = SubmitField("Log In")
 
 
 app = Flask(__name__)
-bootstrap = Bootstrap(app)
-
+bootstrap = Bootstrap5(app)
 # Add a secret key for CSRF protection
 app.secret_key = 'jay shree ram'
 email = "nikhiltelase@gmail.com"
@@ -34,23 +36,23 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    login_form = LoginForm()
+    form = LoginForm()
 
-    if login_form.validate_on_submit():
-        entered_email = login_form.email.data
-        entered_pass = login_form.password.data
+    if form.validate_on_submit():
+        entered_email = form.email.data
+        entered_pass = form.password.data
 
         if entered_email == email and entered_pass == password:
             user_name = entered_email.split("@")[0]
             return render_template('success.html', username=user_name)
         elif entered_email != email:
             # if email is not match then so error wrong email
-            return render_template('login.html', form=login_form, wrong_email='wrong email address')
+            return render_template('login.html', form=form, wrong_email='wrong email address')
         elif entered_pass != password:
             # if password is not match then so error wrong password
-            return render_template('login.html', form=login_form, wrong_password='wrong password')
+            return render_template('login.html', form=form, wrong_password='wrong password')
 
-    return render_template('login.html', form=login_form)
+    return render_template('login.html', form=form)
 
 
 if __name__ == '__main__':

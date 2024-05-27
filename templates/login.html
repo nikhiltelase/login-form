@@ -1,30 +1,73 @@
 {% extends "base.html" %}
 {% from 'bootstrap/form.html' import render_field, render_hidden_errors %}
-{% block title %} Login {% endblock %}
-
 {% block content %}
-	<div class="container">
-		<h1>Login</h1>
-        <!-- This is where our form will go. -->
-		<form method="POST" action="{{ url_for('login' )}}" novalidate>
-			{{ form.csrf_token }}
-			<div>
-				{{ render_field(form.email) }}
-				<!-- wrong email -->
-				<span style="color: red;">{{ wrong_email }}</span>
-				<!-- errors -->
-				{{ render_hidden_errors(form) }}
-			</div>
-			<div>
-				{{ render_field(form.password) }}
-				<!-- wrong password -->
-				<span style="color: red;">{{ wrong_password }}</span>
-				<!-- errors -->
-				{{ render_hidden_errors(form) }}
-			</div>
-			<br>
-			{{ render_field(form.submit) }}
-			
-		</form>
-	</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card my-5 border-0 shadow rounded-3 overflow-hidden">
+                <div class="card-body p-4 p-sm-5">
+                    <!-- Sign In Form -->
+                    <h3 class="login-heading mb-4 text-center">Welcome back!</h3>
+                    <form method="POST" action="{{ url_for('login') }}" novalidate>
+                        {{ form.csrf_token }}
+                        <div class="form-floating mb-3">
+                            {{ render_field(form.email) }}
+                            <span class="text-danger">{{ wrong_email }}</span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+							<div class="d-flex justify-content-center align-items-center">
+								<div class="col">
+									{{ render_field(form.password, class="form-control")}}
+									<span class="text-danger">{{ wrong_password }}</span>
+								</div>
+								<div class="col-auto">
+									<button id="show-password-button" type="button" class="btn btn-sm btn-outline-secondary" style="display: none;">
+										<i id="password-toggle-icon" class="fas fa-eye"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+
+                        <div class="d-grid gap-2">
+                            {{ render_field(form.submit, class="btn btn-primary btn-block") }}
+                        </div>
+                        <div class="text-center mt-3">
+                            <a class="small" href="#">Forgot password?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('{{ form.password.id }}');
+        const passwordToggleButton = document.getElementById('show-password-button');
+        const passwordToggleIcon = document.getElementById('password-toggle-icon');
+
+        passwordInput.addEventListener('input', function () {
+            if (passwordInput.value.trim() !== '') {
+                passwordToggleButton.style.display = 'block';
+            } else {
+                passwordToggleButton.style.display = 'none';
+            }
+        });
+
+        passwordToggleButton.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggleIcon.classList.remove('fa-eye');
+                passwordToggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggleIcon.classList.remove('fa-eye-slash');
+                passwordToggleIcon.classList.add('fa-eye');
+            }
+        });
+    });
+</script>
 {% endblock %}
